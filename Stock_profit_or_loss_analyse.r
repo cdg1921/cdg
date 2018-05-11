@@ -27,7 +27,6 @@ data_buy <- data_stock[which((data_stock$TradeType %in% c('Buy'))& (data_stock$S
 #Buy detail(the stock has never been selled)
 data_buy_and_not_sell <- subset(data_stock[which((data_stock$TradeType %in% c('Buy'))& !(data_stock$StkCode %in% c(data_sell$StkCode))),], select = c(Trader,Fee))
 
-
 data_buy_and_sell <- aggregate(x=data_sell[c('Quantity','money')], by = list(data_sell$Trader, data_sell$StkCode), FUN=sum)
 
 #Initial the varibles to 0
@@ -74,13 +73,11 @@ if(nrow(data_buy)==0){
   data_buy_and_sell <- subset(data_buy_and_sell, select=c(Trader,profit_or_loss))
 }
 
-
 #If buy and never sell the stock, the profit_or_loss is just the fee
 data_profit <- merge(data_buy_and_sell,data_buy_and_not_sell,by='Trader',all.x = TRUE)
 data_profit[is.na(data_profit)] <- 0
 data_profit$profit_or_loss <- data_profit$profit_or_loss - data_profit$Fee
 data_profit <- subset(data_profit, select=c(Trader,profit_or_loss))
-
 
 #Remove the header
 dimnames(data_profit) <- list(1:nrow(data_profit), 1:ncol(data_profit))  
@@ -103,4 +100,3 @@ print(data_stock1)
 
 #Finally,We can put the script file in 'D:/', and then can run the script through the following script:
 #system.time(source("D:/Stock_profit_or_loss_analyse.r"))
-#add analyse
