@@ -5,7 +5,7 @@ data_stock = read.table("D:/data.tsv",header = TRUE, sep = "\t")  #Suppost the d
 data_stock$Timestamp <- gsub("[\\]","-",data_stock$Timestamp) 
 data_stock$Timestamp <- as.POSIXlt(data_stock$Timestamp)
 
-#Loss = buy + fee; Profit = sell - fee
+#outcome = buy + fee; income = sell - fee; profit_or_loss = income - outcome.
 for (i in 1:nrow(data_stock)) { # i = 1
     if(data_stock[i,c('TradeType')] == 'Buy'){
       data_stock[i,c('money')] <- data_stock[i,c('Quantity')] * data_stock[i,c('Price')] + data_stock[i,c('Fee')]
@@ -75,7 +75,7 @@ if(nrow(data_buy)==0){
 }
 
 
-#If buy and never save the stock, the profit_or_loss is just the fee
+#If buy and never sell the stock, the profit_or_loss is just the fee
 data_profit <- merge(data_buy_and_sell,data_buy_and_not_sell,by='Trader',all.x = TRUE)
 data_profit[is.na(data_profit)] <- 0
 data_profit$profit_or_loss <- data_profit$profit_or_loss - data_profit$Fee
@@ -96,10 +96,10 @@ rm(list = ls())   #clear the environment
 data_stock1 = read.table("D:/data_result.tsv",header = TRUE, sep = "\t")
 print(data_stock1)
 #Results will be shown as follow:
-#   X1      X2
+#   V1      V2
 #1 AAA   96.48
 #2 BBB -252.96
-#Note:in R,if a table doesn't include headers， X1,X2,……will be default
+#Note:in R,if a table doesn't include headers， V1,V2,……will be default
 
 #Finally,We can put the script file in 'D:/', and then can run the script through the following script:
 #system.time(source("D:/Stock_profit_or_loss_analyse.r"))
